@@ -8,7 +8,7 @@ from faker import Faker
 
 # Local imports
 from app import app
-from models import db, User, Recipe, Comment, Favorite, Rating, Tag
+from models import db, User, Recipe, Comment, Favorite, Rating, Tag, recipe_tag_association
 
 if __name__ == '__main__':
     fake = Faker()
@@ -39,6 +39,9 @@ if __name__ == '__main__':
             db.session.add(tag)
             tags.append(tag)
 
+        # Commit users and tags to get IDs
+        db.session.commit()
+
         # Create recipes
         recipes = []
         for _ in range(20):
@@ -47,22 +50,29 @@ if __name__ == '__main__':
                 description=fake.paragraph(),
                 ingredients=fake.text(),
                 instructions=fake.text(),
-                user=rc(users)
+                user=rc(users)  # Randomly choose a user
             )
+            
             db.session.add(recipe)
             recipes.append(recipe)
+        
+        db.session.commit()  # Commit recipes to get IDs
 
-        # Commit users, tags, and recipes to get IDs
-        db.session.commit()
-
-        # Associate recipes with tags without duplicates
+        # Associate recipes with tags
         for recipe in recipes:
-            assigned_tags = set()
-            for _ in range(randint(1, 3)):
-                tag = rc(tags)
-                if tag not in assigned_tags:
-                    recipe.tags.append(tag)
-                    assigned_tags.add(tag)
+            num_tags = randint(1, 3)
+            selected_tags = set()  # Use a set to ensure unique tags
+            while len(selected_tags) < num_tags:
+                selected_tags.add(rc(tags))
+            for tag in selected_tags:
+                stmt = recipe_tag_association.insert().values(
+                    recipe_id=recipe.id,
+                    tag_id=tag.id,
+                    user_submittable_attribute=fake.word()  # Provide a value for user_submittable_attribute
+                )
+                db.session.execute(stmt)
+        
+        db.session.commit()  # Commit associations
 
         # Create comments
         for _ in range(50):

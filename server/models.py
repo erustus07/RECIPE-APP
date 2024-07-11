@@ -9,7 +9,8 @@ from config import db
 #Association table for the many-to-many relationship
 recipe_tag_association = Table('recipe_tag', db.Model.metadata,
     Column('recipe_id', Integer, ForeignKey('recipe.id'), primary_key=True),
-    Column('tag_id', Integer, ForeignKey('tag.id'), primary_key=True)
+    Column('tag_id', Integer, ForeignKey('tag.id'), primary_key=True),
+    Column('user_submittable_attribute', db.String, nullable=False)
 )
 
 class User(db.Model, SerializerMixin):
