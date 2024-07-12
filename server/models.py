@@ -1,19 +1,22 @@
 from sqlalchemy_serializer import SerializerMixin
+from flask_bcrypt import Bcrypt
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy import Table, Column, Integer, ForeignKey
+from flask_login import UserMixin
+from sqlalchemy.dialects.sqlite import TEXT
 
 from config import db
 
-# Models go here!
+bcrypt = Bcrypt()
 
-#Association table for the many-to-many relationship
+# Association table for the many-to-many relationship
 recipe_tag_association = Table('recipe_tag', db.Model.metadata,
     Column('recipe_id', Integer, ForeignKey('recipe.id'), primary_key=True),
     Column('tag_id', Integer, ForeignKey('tag.id'), primary_key=True),
-    Column('user_submittable_attribute', db.String, nullable=False)
+    Column('user_submittable_attribute', TEXT, nullable=False)
 )
 
-class User(db.Model, SerializerMixin):
+class User(db.Model, UserMixin, SerializerMixin):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
