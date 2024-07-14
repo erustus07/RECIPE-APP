@@ -1,36 +1,40 @@
-from sqlalchemy_serializer import SerializerMixin
-from flask_bcrypt import Bcrypt
-from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy import Table, Column, Integer, ForeignKey
+from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
-from sqlalchemy.dialects.sqlite import TEXT
+from werkzeug.security import generate_password_hash, check_password_hash
 
-from config import db
+db = SQLAlchemy()
 
-bcrypt = Bcrypt()
-
-# Association table for the many-to-many relationship
-recipe_tag_association = Table('recipe_tag', db.Model.metadata,
-    Column('recipe_id', Integer, ForeignKey('recipe.id'), primary_key=True),
-    Column('tag_id', Integer, ForeignKey('tag.id'), primary_key=True),
-    Column('user_submittable_attribute', TEXT, nullable=False)
+# Association table for many-to-many relationship between Recipe and Tag
+recipe_tag_association = db.Table('recipe_tag_association',
+    db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True),
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
+    db.Column('user_note', db.String)
 )
 
-class User(db.Model, UserMixin, SerializerMixin):
+class User(db.Model, UserMixin):
     __tablename__ = 'user'
-
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    password = db.Column(db.String, nullable=False)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)  # Added email field
+    password_hash = db.Column(db.String(128), nullable=False)
 
-    recipes = db.relationship('Recipe', back_populates='user')
-    comments = db.relationship('Comment', back_populates='user')
+    # Relationships
+    recipes = db.relationship('Recipe', back_populates='author')
+    comments = db.relationship('Comment', back_populates='author')
     favorites = db.relationship('Favorite', back_populates='user')
     ratings = db.relationship('Rating', back_populates='user')
 
-class Recipe(db.Model, SerializerMixin):
-    __tablename__ = 'recipe'
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
 
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
+
+class Recipe(db.Model):
+    __tablename__ = 'recipe'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.Text, nullable=False)
@@ -38,48 +42,64 @@ class Recipe(db.Model, SerializerMixin):
     instructions = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    user = db.relationship('User', back_populates='recipes')
+    # Relationships
+    author = db.relationship('User', back_populates='recipes')
     comments = db.relationship('Comment', back_populates='recipe')
     favorites = db.relationship('Favorite', back_populates='recipe')
     ratings = db.relationship('Rating', back_populates='recipe')
     tags = db.relationship('Tag', secondary=recipe_tag_association, back_populates='recipes')
 
-class Comment(db.Model, SerializerMixin):
-    __tablename__ = 'comment'
+    def __repr__(self):
+        return '<Recipe {}>'.format(self.name)
 
+class Comment(db.Model):
+    __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
 
-    user = db.relationship('User', back_populates='comments')
+    # Relationships
+    author = db.relationship('User', back_populates='comments')
     recipe = db.relationship('Recipe', back_populates='comments')
 
-class Favorite(db.Model, SerializerMixin):
-    __tablename__ = 'favorite'
+    def __repr__(self):
+        return '<Comment {}>'.format(self.content[:20])
 
+class Favorite(db.Model):
+    __tablename__ = 'favorite'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
 
+    # Relationships
     user = db.relationship('User', back_populates='favorites')
     recipe = db.relationship('Recipe', back_populates='favorites')
 
-class Rating(db.Model, SerializerMixin):
-    __tablename__ = 'rating'
+    def __repr__(self):
+        return '<Favorite user_id={} recipe_id={}>'.format(self.user_id, self.recipe_id)
 
+class Rating(db.Model):
+    __tablename__ = 'rating'
     id = db.Column(db.Integer, primary_key=True)
     score = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
 
+    # Relationships
     user = db.relationship('User', back_populates='ratings')
     recipe = db.relationship('Recipe', back_populates='ratings')
 
-class Tag(db.Model, SerializerMixin):
-    __tablename__ = 'tag'
+    def __repr__(self):
+        return '<Rating {}>'.format(self.score)
 
+class Tag(db.Model):
+    __tablename__ = 'tag'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
 
+    # Relationships
     recipes = db.relationship('Recipe', secondary=recipe_tag_association, back_populates='tags')
+
+    def __repr__(self):
+        return '<Tag {}>'.format(self.name)
