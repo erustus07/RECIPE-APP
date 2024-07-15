@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
 
 function Navbar() {
   const [user, setUser] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     setUser(storedUser ? JSON.parse(storedUser) : null);
-  }, []);
+  }, [location.pathname]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -28,7 +29,6 @@ function Navbar() {
   };
 
   const userInitials = user ? getInitials(user.name) : "";
-
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -62,7 +62,7 @@ function Navbar() {
             {user ? (
               <>
                 <li className="nav-links" onClick={handleLogout}>
-                  <Link className="login">{userInitials}Logout</Link>
+                  <Link className="login">{userInitials} Logout</Link>
                 </li>
               </>
             ) : (
