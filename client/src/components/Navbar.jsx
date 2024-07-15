@@ -60,6 +60,11 @@ function Navbar() {
                 Add Yours
               </Link>
             </li>
+            <li className="nav-links">
+              <Link to="/recipes" className="navs" onClick={toggleMenu}>
+                Recipes
+              </Link>
+            </li>
             {user ? (
               <>
                 <li className="nav-links" onClick={handleLogout}>
@@ -86,4 +91,3 @@ function Navbar() {
 }
 
 export default Navbar;
-
