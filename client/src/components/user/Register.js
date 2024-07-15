@@ -1,24 +1,24 @@
 // Register.js
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/register', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, password }),
+        body: JSON.stringify({ name, email, password }),
       });
 
       if (!response.ok) {
@@ -26,11 +26,11 @@ const Register = () => {
       }
 
       const data = await response.json();
-      console.log('Registration successful:', data);
-      navigate('/login'); // Redirect to login page after successful registration
+      console.log("Registration successful:", data);
+      navigate("/login"); // Redirect to login page after successful registration
     } catch (error) {
-      console.error('Error registering user:', error);
-      setError(error.message || 'An unexpected error occurred');
+      console.error("Error registering user:", error);
+      setError(error.message || "An unexpected error occurred");
     }
   };
 
@@ -49,6 +49,14 @@ const Register = () => {
           />
         </div>
         <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div>
           <label htmlFor="password">Password:</label>
           <input
             type="password"
@@ -58,7 +66,7 @@ const Register = () => {
             required
           />
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <button type="submit">Register</button>
       </form>
     </div>
