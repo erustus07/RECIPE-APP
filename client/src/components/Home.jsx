@@ -1,15 +1,18 @@
 import React from "react";
-import './Home.css';
-
+import "./Home.css";
+import PastaImage from "../images/Pasta.png";
 
 function Home() {
   return (
     <div>
       <div className="landingPage">
         <div className="intro">
+          <div className="description-image">
+            <img src={PastaImage} alt="App Description" className="description-image" />
+          </div>
           <div className="text-container">
             <h1>DON'T KNOW WHAT </h1>
-            <h1 >
+            <h1>
               TO <span className="highlighted">COOK?</span>
             </h1>
             <p className="ptag">
@@ -32,3 +35,4 @@ function Home() {
 }
 
 export default Home;
+

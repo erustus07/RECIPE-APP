@@ -1,87 +1,88 @@
 .landingPage {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    background-color: #000;
-    color: #fff;
-    min-height: calc(100vh - 60px); /* Adjust according to your navbar height */
-  }
-  
-  .intro {
-    flex: 1;
-    padding: 20px;
-    display: flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #000;
+  color: #fff;
+  min-height: calc(100vh - 60px); /* Adjust according to your navbar height */
+}
+
+.intro {
+  display: flex;
+  flex-direction: row; /* Ensure items are displayed side by side */
+  align-items: center; /* Center items vertically */
+  padding: 20px;
+  margin-left: 20px;
+}
+
+.description-image {
+  flex: 1; /* Take up remaining space */
+  margin-right: 20px; /* Adjust spacing between text and image */
+}
+
+.text-container {
+  flex: 1; /* Take up remaining space */
+}
+
+.text-container h1 {
+  font-size: 3rem;
+  margin: 0;
+  margin-right: 15rem;
+}
+
+.highlighted {
+  color: #b22222;
+}
+
+.ptag {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-top: 40px;
+  margin-right: 25px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.separator {
+  width: 2px;
+  height: 100%;
+  background-color: #b22222;
+  margin: 0 20px;
+}
+
+.homeImage {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.homeImage img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .landingPage {
     flex-direction: column;
-    justify-content: center;
-    margin-left: 20px;
   }
 
+  .intro, .homeImage {
+    padding: 10px;
+    text-align: center;
+  }
 
   .intro h1 {
-    font-size: 3rem;
-    margin: 0;
-    margin-right: 15rem;
+    font-size: 2rem;
   }
 
-  
-  
-  .highlighted {
-    color: #b22222;
-  }
-  
-  .ptag {
-    font-size: 1rem;
-    line-height: 1.5;
-    margin-top: 40px;
-    margin-right: 25px;
-    font-size: 20px;
-    font-weight: 500;
-  }
-  
-  
   .separator {
-    width: 2px;
-    height: 100%;
-    background-color: #b22222;
-    margin: 0 20px;
+    width: 100%;
+    height: 2px;
+    margin: 20px 0;
   }
-  
-  .homeImage {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .homeImage img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-  }
-  
-  /* Responsive styles */
-  @media (max-width: 768px) {
-    .landingPage {
-      flex-direction: column;
-    }
-  
-    .intro, .homeImage {
-      padding: 10px;
-      text-align: center;
-    }
-  
-    .intro h1 {
-      font-size: 2rem;
-    }
-  
-    .separator {
-      width: 100%;
-      height: 2px;
-      margin: 20px 0;
-    }
-  }
-
-
- 
+}
