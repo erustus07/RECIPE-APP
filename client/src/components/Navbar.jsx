@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
+import chefIcon from '../images/chef.png'; // Import your icon here
 
 function Navbar() {
   const [user, setUser] = useState(null);
@@ -39,7 +40,7 @@ function Navbar() {
     <div className="navbar">
       <div className="Nav-container">
         <div className="nav-branding">
-          <img src="chef.jpeg" alt="chef" className="chef" />
+          <img src={chefIcon} alt="Chef Hat Icon" className="chef-icon" /> {/* Display your icon */}
           Recipe<span className="hub">APP</span>
         </div>
         <div className={`nav-link-container ${isOpen ? "open" : ""}`}>
@@ -85,3 +86,4 @@ function Navbar() {
 }
 
 export default Navbar;
+
