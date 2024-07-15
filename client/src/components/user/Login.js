@@ -1,9 +1,11 @@
-import React, { useState, useContext } from 'react';
+// Login.js
+import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { AuthContext } from '../auth/AuthProvider';
+import { useAuth } from '../auth/AuthProvider';
+
 
 const Login = () => {
-  const { setIsAuth } = useContext(AuthContext);
+  const { setIsAuth } = useAuth();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -13,6 +15,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
     try {
       const response = await fetch('http://localhost:5000/login', {
@@ -47,7 +50,7 @@ const Login = () => {
   }
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         {error && <p style={{ color: 'red' }}>{error}</p>}

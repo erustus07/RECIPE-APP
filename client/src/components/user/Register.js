@@ -1,5 +1,7 @@
+// Register.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 
 const Register = () => {
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <div className="register-container">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <div>
