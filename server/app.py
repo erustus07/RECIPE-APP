@@ -55,7 +55,7 @@ def register():
         return jsonify({"message": "Invalid input"}), 400
 
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(username=data['name'], email=data['emai'], password_hash=hashed_password)
+    new_user = User(username=data['name'], email=data['email'], password_hash=hashed_password)
 
     try:
         db.session.add(new_user)
