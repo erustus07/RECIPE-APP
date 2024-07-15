@@ -16,7 +16,7 @@ function Navbar() {
           <img src="chef.jpeg" alt="chef" className="chef" />
           Recipe<span className="hub">APP</span>
         </div>
-        <div className={nav-link-container ${isOpen ? "open" : ""}}>
+        <div className={`nav-link-container ${isOpen ? "open" : ""}`}>
           <ul>
             <li className="nav-links">
               <Link to="/" className="navs" onClick={toggleMenu}>
