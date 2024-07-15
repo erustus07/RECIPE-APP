@@ -1,26 +1,36 @@
-import React, { useContext } from 'react';
-import { AuthContext } from '../auth/AuthProvider';
-
+import React from "react";
+import { useAuth } from "../auth/AuthContext";
+import "./UserProfile.css"; // Import your CSS for styling
+let userInitials
 const UserProfile = () => {
-  const { user } = useContext(AuthContext); // Assuming you have user data in AuthContext
-  const initials = getInitials(user.name); // Function to get initials
+  const { user } = useAuth();
+
+  // Function to get initials from user's name
+  const getInitials = (name) => {
+    if (!name) return "";
+    const names = name.split(" ");
+    if (names.length === 1) {
+      return names[0].charAt(0).toUpperCase();
+    } else {
+      return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
+    }
+  };
+
+  // Calculate initials based on user's name
+   userInitials = getInitials(user?.name || "");
 
   return (
-    <div>
-      <h2>User Profile</h2>
-      <div>
-        <p>Username: {user.name}</p>
-        <p>Initials: {initials}</p>
+    <div className="user-profile">
+      <div className="user-avatar">{userInitials}</div>
+      <div className="user-details">
+        <h3>{user?.name}</h3>
+        <p>Email: {user?.email}</p>
+        {/* Add other user details as needed */}
       </div>
     </div>
   );
 };
 
-// Function to get initials from name
-const getInitials = (name) => {
-  const nameParts = name.split(' ');
-  const initials = nameParts.map((part) => part.charAt(0)).join('').toUpperCase();
-  return initials;
-};
+export { UserProfile, userInitials }; // Exporting userInitials correctly
 
 export default UserProfile;
