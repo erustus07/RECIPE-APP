@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 # Standard library imports
-from random import randint, sample
+from random import randint
 
 # SQLAlchemy imports
-from sqlalchemy import insert 
+from sqlalchemy import insert
 
 # Local imports
 from app import app, db
@@ -155,8 +155,13 @@ if __name__ == '__main__':
             for tag_index in recipe_data['tags']:
                 tag_name = tag_names[tag_index]
                 user_note = recipe_data['note']
-                recipe.tags.append(Tag.query.filter_by(name=tag_name).first())
-
+                tag = Tag.query.filter_by(name=tag_name).first()
+                # Check if association already exists
+                existing_association = db.session.query(recipe_tag_association).filter_by(recipe_id=recipe.id, tag_id=tag.id).first()
+                if not existing_association:
+                    association = recipe_tag_association.insert().values(recipe_id=recipe.id, tag_id=tag.id, user_note=user_note)
+                    db.session.execute(association)
+            
             db.session.commit()
 
         # Create comments
