@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import "../styles/Login.css"; // Import your CSS file for styling
 
@@ -8,7 +8,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const { setIsAuth } = useAuth(); // Access setIsAuth from AuthProvider
+  const { setIsAuth, isAuth } = useAuth(); // Access setIsAuth and isAuth from AuthProvider
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -40,7 +40,7 @@ const Login = () => {
     }
   };
 
-  if (isLoggedIn) {
+  if (isAuth) {
     return <Navigate to="/home" />; // Redirect to home page after successful login
   }
 
