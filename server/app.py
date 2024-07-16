@@ -30,7 +30,7 @@ app.config["SECRET_KEY"] = os.environ.get(
 bcrypt = Bcrypt(app)
 db.init_app(app)
 migrate = Migrate(app, db)
-CORS(app, supports_credentials=True, origins="http://localhost:3000")
+CORS(app, supports_credentials=True)
 
 
 # Routes
@@ -119,10 +119,10 @@ def manage_recipes():
     if request.method == "OPTIONS":
         response = app.make_default_options_response()
         headers = response.headers
-        headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
-        headers["Access-Control-Allow-Headers"] = "Content-Type"
-        headers["Access-Control-Allow-Credentials"] = "true"
+        headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+        headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        headers['Access-Control-Allow-Credentials'] = 'true'
         return response
 
     print("Request method:", request.method)
@@ -179,39 +179,53 @@ def manage_recipes():
         return jsonify({"message": "Method not allowed"}), 405
 
 
-@app.route("/recipes/<int:recipe_id>", methods=["GET", "PUT", "DELETE"])
+
+@app.route("/recipes/<int:recipe_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 def manage_single_recipe(recipe_id):
     recipe = Recipe.query.get_or_404(recipe_id)
 
     if request.method == "GET":
-        return jsonify(
-            {
-                "name": recipe.name,
-                "description": recipe.description,
-                "ingredients": recipe.ingredients,
-                "instructions": recipe.instructions,
-            }
-        )
+        return jsonify({
+            "name": recipe.name,
+            "description": recipe.description,
+            "ingredients": recipe.ingredients,
+            "instructions": recipe.instructions,
+        })
 
     if request.method == "PUT":
-        if "user_id" not in session or recipe.user_id != session["user_id"]:
+        if "user_id" not in session:
             return jsonify({"message": "Unauthorized access"}), 403
+        
+        recipe = Recipe.query.get_or_404(recipe_id)
+        
+        if recipe.user_id != session["user_id"]:
+            return jsonify({"message": "Unauthorized access to edit this recipe"}), 403
+        
         data = request.get_json()
-        if (
-            not data
-            or not data.get("name")
-            or not data.get("description")
-            or not data.get("ingredients")
-            or not data.get("instructions")
-        ):
-            return jsonify({"message": "Invalid input"}), 400
+        if not data or not all(key in data for key in ["name", "description", "ingredients", "instructions"]):
+            return jsonify({"message": "Invalid input, missing required fields"}), 400
 
-        recipe.name = data["name"]
-        recipe.description = data["description"]
-        recipe.ingredients = data["ingredients"]
-        recipe.instructions = data["instructions"]
-        db.session.commit()
-        return jsonify({"message": "Recipe updated successfully"}), 200
+        try:
+            # Update recipe fields
+            recipe.name = data["name"]
+            recipe.description = data["description"]
+            # Join ingredients and instructions lists into strings
+            recipe.ingredients = ", ".join(data["ingredients"])
+            recipe.instructions = ", ".join(data["instructions"])
+            
+            db.session.commit()
+            
+            # Return updated recipe details
+            return jsonify({
+                "id": recipe.id,
+                "name": recipe.name,
+                "description": recipe.description,
+                "ingredients": recipe.ingredients.split(", "),  # Convert back to list for JSON response
+                "instructions": recipe.instructions.split(", "),  # Convert back to list for JSON response
+            }), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"message": "Failed to update recipe", "error": str(e)}), 500
 
     if request.method == "DELETE":
         if "user_id" not in session or recipe.user_id != session["user_id"]:
@@ -219,6 +233,17 @@ def manage_single_recipe(recipe_id):
         db.session.delete(recipe)
         db.session.commit()
         return jsonify({"message": "Recipe deleted successfully"}), 200
+
+    if request.method == "OPTIONS":
+        response = app.make_default_options_response()
+        headers = response.headers
+        headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        headers['Access-Control-Allow-Methods'] = 'GET, PUT, DELETE, OPTIONS'
+        headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        headers['Access-Control-Allow-Credentials'] = 'true'
+        return response
+
+    abort(405)  # Method not allowed for any other method
 
 
 @app.route("/recipes/<int:id>/comments", methods=["POST", "GET"])
@@ -315,9 +340,7 @@ def manage_ratings():
             return jsonify({"message": "Invalid input"}), 400
 
         new_rating = Rating(
-            user_id=session["user_id"],
-            recipe_id=data["recipe_id"],
-            rating=data["rating"],
+            user_id=session["user_id"], recipe_id=data["recipe_id"], rating=data["rating"]
         )
         db.session.add(new_rating)
         db.session.commit()
