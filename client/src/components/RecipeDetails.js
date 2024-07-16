@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import CommentComponent from "./CommentComponent";
 
 const RecipeDetails = () => {
   const { recipeId } = useParams();
   const navigate = useNavigate();
   const [recipe, setRecipe] = useState({});
-  console.log(recipeId);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -17,12 +17,12 @@ const RecipeDetails = () => {
         const data = await res.json();
         // Ensure ingredients and instructions are arrays
         data.ingredients =
-          data.ingredients.split(", ").map((item) => item.trim()) || [];
+          data.ingredients?.split(", ").map((item) => item.trim()) || [];
         data.instructions =
-          data.instructions.split(", ").map((item) => item.trim()) || [];
+          data.instructions?.split(", ").map((item) => item.trim()) || [];
         setRecipe(data);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching recipe:", error);
       }
     };
 
@@ -30,8 +30,6 @@ const RecipeDetails = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipeId]);
-
-  console.log(recipe);
 
   const goBack = () => {
     navigate(-1); // Navigate back to the previous page
@@ -47,14 +45,14 @@ const RecipeDetails = () => {
       <p className="recipe-detail-description">{recipe.description}</p>
       <h3>Ingredients:</h3>
       <ul className="recipe-detail-ingredients">
-        {Array.isArray(recipe.ingredients) &&
+        {recipe.ingredients &&
           recipe.ingredients.map((ingredient, index) => (
             <li key={index}>{ingredient}</li>
           ))}
       </ul>
       <h3>Instructions:</h3>
       <ol className="recipe-detail-instructions">
-        {Array.isArray(recipe.instructions) &&
+        {recipe.instructions &&
           recipe.instructions.map((instruction, index) => (
             <li key={index}>{instruction}</li>
           ))}
@@ -62,6 +60,7 @@ const RecipeDetails = () => {
       <button className="back-button" onClick={goBack}>
         Back to Recipes
       </button>
+      <CommentComponent recipeId={recipeId} />
     </div>
   );
 };

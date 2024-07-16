@@ -32,6 +32,7 @@ function Navbar() {
   const userInitials = user ? getInitials(user.name) : "";
 
   const handleLogout = () => {
+    
     localStorage.removeItem("user");
     setUser(null);
   };
