@@ -1,81 +1,75 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import "../styles/Login.css"; // Import your CSS file for styling
 
 const Login = () => {
-  const navigate = useNavigate();
-  const { setIsAuth } = useAuth();
-  const [name, setName] = useState("");
+
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { setIsAuth } = useAuth(); // Access setIsAuth from AuthProvider
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
     try {
-      const response = await fetch("http://localhost:5000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, password }),
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error('Login failed');
       }
 
-      const data = await response.json();
-      console.log("Login successful:", data);
+      // Reset form fields and errors upon successful login
+      setUsername('');
+      setPassword('');
+      setError(null);
 
-      setIsAuth(true); // Set authentication state to true
-      setIsLoggedIn(true); // Set logged-in state to true
-      localStorage.setItem("user", JSON.stringify({ name }));
+      // Update authentication state
+      setIsAuth(true);
+
+      // Redirect to home page after successful login
+      navigate('/');
     } catch (error) {
-      console.error("Login error:", error);
-      setError("Invalid username or password"); // Set error message for invalid credentials
-    } finally {
-      setIsLoading(false);
+      setError('Invalid username or password');
+      console.error('Login error:', error);
     }
   };
 
   if (isLoggedIn) {
-    navigate("/home"); // Redirect to home page after successful login
+    return <Navigate to="/home" />; // Redirect to home page after successful login
   }
 
   return (
     <div className="login-container">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
-        {error && <p className="error-message">{error}</p>}
-        <div>
-          <label>Username:</label>
+        <label>
+          Username:
           <input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
-        </div>
-        <div>
-          <label>Password:</label>
+        </label>
+        <label>
+          Password:
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
-        </div>
-        <button type="submit" disabled={isLoading}>
-          Login
-        </button>
+        </label>
+        <button type="submit">Login</button>
+        {error && <p>{error}</p>}
       </form>
-      <p>
-        Don't have an account? <Link to="/register">Register</Link>
-      </p>
+      <p>Don't have an account? <Link to="/register">Register here</Link></p>
     </div>
   );
 };
