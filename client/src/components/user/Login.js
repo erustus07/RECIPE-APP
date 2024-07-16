@@ -1,75 +1,89 @@
 import React, { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import "../styles/Login.css"; // Import your CSS file for styling
 
 const Login = () => {
-
+  const navigate = useNavigate();
+  const { setIsAuth } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const { setIsAuth, isAuth } = useAuth(); // Access setIsAuth and isAuth from AuthProvider
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false); // State for controlling popup visibility
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
     try {
-      const response = await fetch('http://localhost:5000/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ username, password }),
       });
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      // Reset form fields and errors upon successful login
-      setUsername('');
-      setPassword('');
-      setError(null);
-
-      // Update authentication state
-      setIsAuth(true);
-
-      // Redirect to home page after successful login
-      navigate('/');
+      const data = await response.json();
+      console.log(data);
+      localStorage.setItem("user", JSON.stringify({ username }));
+      setIsAuth(true); // Set authentication state to true
+      setShowPopup(true); // Set state to show popup message
     } catch (error) {
-      setError('Invalid username or password');
-      console.error('Login error:', error);
+      console.error("Login error:", error);
+      setError("Invalid username or password"); // Set error message for invalid credentials
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  if (isAuth) {
-    return <Navigate to="/home" />; // Redirect to home page after successful login
-  }
+  const closePopup = () => {
+    setShowPopup(false);
+    navigate("/home"); // Redirect after closing popup
+  };
 
   return (
     <div className="login-container">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
-        <label>
-          Username:
+        {error && <p className="error-message">{error}</p>}
+        <div>
+          <label>Username:</label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
           />
-        </label>
-        <label>
-          Password:
+        </div>
+        <div>
+          <label>Password:</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
-        </label>
-        <button type="submit">Login</button>
-        {error && <p>{error}</p>}
+        </div>
+        <button type="submit" disabled={isLoading}>
+          Login
+        </button>
       </form>
-      <p>Don't have an account? <Link to="/register">Register here</Link></p>
+      <p>
+        Don't have an account? <Link to="/register">Register</Link>
+      </p>
+
+      {/* Popup message */}
+      {showPopup && (
+        <div className="popup">
+          <p>Login successful!</p>
+          <button onClick={closePopup}>Close</button>
+        </div>
+      )}
     </div>
   );
 };
