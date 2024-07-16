@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import RecipeCard from './RecipeCard'; // Adjust the path based on your project structure
 
 const Recipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -20,6 +21,7 @@ const Recipes = () => {
       setRecipes(data);
     } catch (error) {
       console.error('Error fetching recipes:', error);
+      // Handle error state or show a message to the user
     }
   };
 
@@ -51,12 +53,7 @@ const Recipes = () => {
       <div className="recipe-list">
         {filteredRecipes.length > 0 ? (
           filteredRecipes.map(recipe => (
-            <div className="recipe-card" key={recipe.id}>
-              <button onClick={() => redirectToRecipeDetails(recipe.id)}>
-                <h3>{recipe.name}</h3>
-                <p>{recipe.description}</p>
-              </button>
-            </div>
+            <RecipeCard key={recipe.id} recipe={recipe} redirectToRecipeDetails={redirectToRecipeDetails} />
           ))
         ) : (
           <p>No recipes found.</p>
