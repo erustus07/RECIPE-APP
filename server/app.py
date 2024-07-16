@@ -30,7 +30,7 @@ app.config["SECRET_KEY"] = os.environ.get(
 bcrypt = Bcrypt(app)
 db.init_app(app)
 migrate = Migrate(app, db)
-CORS(app)
+CORS(app, supports_credentials=True, origins="http://localhost:3000")
 
 
 # Routes
@@ -74,6 +74,7 @@ def login():
 
     if user and bcrypt.check_password_hash(user.password_hash, data["password"]):
         session["user_id"] = user.id  # Store user id in session
+        print("Session after login:", session)
         return jsonify({"message": "Logged in successfully!"}), 200
 
     return jsonify({"message": "Invalid credentials"}), 401
@@ -113,10 +114,24 @@ def manage_user(user_id):
         return jsonify({"message": "User deleted successfully"}), 200
 
 
-@app.route("/recipes", methods=["POST", "GET"])
+@app.route("/recipes", methods=["POST", "GET", "OPTIONS"])
 def manage_recipes():
+    if request.method == "OPTIONS":
+        response = app.make_default_options_response()
+        headers = response.headers
+        headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+        headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        headers['Access-Control-Allow-Credentials'] = 'true'
+        return response
+
+    print("Request method:", request.method)
+    print("Request headers:", request.headers)
+    print("Session contents:", session)  # Debug statement to log session contents
+
     if request.method == "POST":
         if "user_id" not in session:
+            print("User ID not in session")
             return jsonify({"message": "Unauthorized access"}), 403
 
         data = request.get_json()
@@ -160,9 +175,9 @@ def manage_recipes():
 
         return jsonify(recipe_list)
 
-    # Handle other HTTP methods if necessary
     else:
         return jsonify({"message": "Method not allowed"}), 405
+
 
 
 @app.route("/recipes/<int:recipe_id>", methods=["GET", "PUT", "DELETE"])
@@ -282,8 +297,8 @@ def manage_favorites():
             [
                 {
                     "id": favorite.id,
-                    "user_id": favorite.user_id,
                     "recipe_id": favorite.recipe_id,
+                    "user_id": favorite.user_id,
                 }
                 for favorite in favorites
             ]
@@ -297,11 +312,11 @@ def manage_ratings():
             return jsonify({"message": "Unauthorized access"}), 403
 
         data = request.get_json()
-        if not data or not data.get("score") or not data.get("recipe_id"):
+        if not data or not data.get("recipe_id") or not data.get("rating"):
             return jsonify({"message": "Invalid input"}), 400
 
         new_rating = Rating(
-            score=data["score"], user_id=session["user_id"], recipe_id=data["recipe_id"]
+            user_id=session["user_id"], recipe_id=data["recipe_id"], rating=data["rating"]
         )
         db.session.add(new_rating)
         db.session.commit()
@@ -313,49 +328,14 @@ def manage_ratings():
             [
                 {
                     "id": rating.id,
-                    "score": rating.score,
-                    "user_id": rating.user_id,
                     "recipe_id": rating.recipe_id,
+                    "user_id": rating.user_id,
+                    "rating": rating.rating,
                 }
                 for rating in ratings
             ]
         )
 
 
-@app.route("/ratings/<int:rating_id>", methods=["GET", "PUT", "DELETE"])
-def manage_single_rating(rating_id):
-    rating = Rating.query.get_or_404(rating_id)
-
-    if request.method == "GET":
-        return jsonify(
-            {
-                "score": rating.score,
-                "user_id": rating.user_id,
-                "recipe_id": rating.recipe_id,
-            }
-        )
-
-    if request.method == "PUT":
-        if "user_id" not in session or rating.user_id != session["user_id"]:
-            return jsonify({"message": "Unauthorized access"}), 403
-
-        data = request.get_json()
-        if not data or not data.get("score"):
-            return jsonify({"message": "Invalid input"}), 400
-
-        rating.score = data["score"]
-        db.session.commit()
-        return jsonify({"message": "Rating updated successfully"}), 200
-
-    if request.method == "DELETE":
-        if "user_id" not in session or rating.user_id != session["user_id"]:
-            return jsonify({"message": "Unauthorized access"}), 403
-
-        db.session.delete(rating)
-        db.session.commit()
-        return jsonify({"message": "Rating deleted successfully"}), 200
-
-
-# Run the app
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
