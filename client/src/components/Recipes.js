@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import RecipeCard from "./RecipeCard";
+import styles from "./styles/SearchStyles.module.css";
 
 const Recipes = () => {
   const [recipes, setRecipesState] = useState([]);
@@ -40,16 +41,25 @@ const Recipes = () => {
   const redirectToAddRecipe = () => {
     navigate("/recipes/add");
   };
-
+  if (!recipes) {
+    return <h1>Loading ....</h1>;
+  }
   return (
     <div>
       <h2>Recipes</h2>
-      <input
-        type="text"
-        placeholder="Search recipes..."
-        value={searchTerm}
-        onChange={handleSearch}
-      />
+      <div className={styles.container}>
+        <input
+          type="text"
+          placeholder="Search recipes..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className={styles.inputField}
+        />
+        <button onClick={redirectToAddRecipe} className={styles.button}>
+          Add New Recipe
+        </button>
+      </div>
+
       <div className="recipe-list">
         {filteredRecipes.length > 0 ? (
           filteredRecipes.map((recipe) => (
@@ -63,7 +73,6 @@ const Recipes = () => {
           <p>No recipes found.</p>
         )}
       </div>
-      <button onClick={redirectToAddRecipe}>Add New Recipe</button>
     </div>
   );
 };
