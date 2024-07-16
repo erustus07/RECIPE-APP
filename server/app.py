@@ -27,7 +27,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY", "eba0cf20aa1e08d3a1dea74f142cfa28"
 )  # Use environment variable for secret key
-app.secret_key = "hello"
 bcrypt = Bcrypt(app)
 db.init_app(app)
 migrate = Migrate(app, db)
