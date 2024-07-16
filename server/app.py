@@ -27,6 +27,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY", "eba0cf20aa1e08d3a1dea74f142cfa28"
 )  # Use environment variable for secret key
+app.secret_key = "hello"
 bcrypt = Bcrypt(app)
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -119,10 +120,10 @@ def manage_recipes():
     if request.method == "OPTIONS":
         response = app.make_default_options_response()
         headers = response.headers
-        headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
-        headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
-        headers['Access-Control-Allow-Headers'] = 'Content-Type'
-        headers['Access-Control-Allow-Credentials'] = 'true'
+        headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
+        headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+        headers["Access-Control-Allow-Headers"] = "Content-Type"
+        headers["Access-Control-Allow-Credentials"] = "true"
         return response
 
     print("Request method:", request.method)
@@ -177,7 +178,6 @@ def manage_recipes():
 
     else:
         return jsonify({"message": "Method not allowed"}), 405
-
 
 
 @app.route("/recipes/<int:recipe_id>", methods=["GET", "PUT", "DELETE"])
@@ -316,7 +316,9 @@ def manage_ratings():
             return jsonify({"message": "Invalid input"}), 400
 
         new_rating = Rating(
-            user_id=session["user_id"], recipe_id=data["recipe_id"], rating=data["rating"]
+            user_id=session["user_id"],
+            recipe_id=data["recipe_id"],
+            rating=data["rating"],
         )
         db.session.add(new_rating)
         db.session.commit()
