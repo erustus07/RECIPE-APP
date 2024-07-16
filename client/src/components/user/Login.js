@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import "../styles/Login.css"; // Import your CSS file for styling
 
 const Login = () => {
+  const navigate = useNavigate();
   const { setIsAuth } = useAuth();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -44,7 +45,7 @@ const Login = () => {
   };
 
   if (isLoggedIn) {
-    return <Navigate to="/home" />; // Redirect to home page after successful login
+    navigate("/home"); // Redirect to home page after successful login
   }
 
   return (
