@@ -23,8 +23,6 @@ const RecipeForm = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Optionally, include authentication headers if needed
-          // 'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(formData)
       });

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import RecipeCard from './RecipeCard'; // Adjust the path based on your project structure
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import RecipeCard from "./RecipeCard";
 
 const Recipes = () => {
-  const [recipes, setRecipes] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [recipes, setRecipesState] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,14 +13,14 @@ const Recipes = () => {
 
   const fetchRecipes = async () => {
     try {
-      const response = await fetch('http://localhost:5000/recipes');
+      const response = await fetch("http://localhost:5000/recipes");
       if (!response.ok) {
-        throw new Error('Failed to fetch recipes');
+        throw new Error("Failed to fetch recipes");
       }
       const data = await response.json();
-      setRecipes(data);
+      setRecipesState(data); // Set fetched recipes
     } catch (error) {
-      console.error('Error fetching recipes:', error);
+      console.error("Error fetching recipes:", error);
       // Handle error state or show a message to the user
     }
   };
@@ -29,7 +29,7 @@ const Recipes = () => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredRecipes = recipes.filter(recipe =>
+  const filteredRecipes = recipes.filter((recipe) =>
     recipe.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -38,7 +38,7 @@ const Recipes = () => {
   };
 
   const redirectToAddRecipe = () => {
-    navigate('/recipes/add');
+    navigate("/recipes/add");
   };
 
   return (
@@ -52,8 +52,12 @@ const Recipes = () => {
       />
       <div className="recipe-list">
         {filteredRecipes.length > 0 ? (
-          filteredRecipes.map(recipe => (
-            <RecipeCard key={recipe.id} recipe={recipe} redirectToRecipeDetails={redirectToRecipeDetails} />
+          filteredRecipes.map((recipe) => (
+            <RecipeCard
+              key={recipe.id}
+              recipe={recipe}
+              redirectToRecipeDetails={redirectToRecipeDetails}
+            />
           ))
         ) : (
           <p>No recipes found.</p>
