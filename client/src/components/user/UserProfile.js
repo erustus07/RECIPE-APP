@@ -1,6 +1,5 @@
 import React from "react";
 import { useAuth } from "../auth/AuthContext";
-import "./UserProfile.css"; // Import your CSS for styling
 let userInitials
 const UserProfile = () => {
   const { user } = useAuth();
