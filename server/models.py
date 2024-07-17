@@ -43,9 +43,9 @@ class Recipe(db.Model):
 
     # Relationships
     author = db.relationship('User', back_populates='recipes')
-    comments = db.relationship('Comment', back_populates='recipe')
-    favorites = db.relationship('Favorite', back_populates='recipe')
-    ratings = db.relationship('Rating', back_populates='recipe')
+    comments = db.relationship('Comment', back_populates='recipe', cascade='all, delete-orphan')
+    favorites = db.relationship('Favorite', back_populates='recipe', cascade='all, delete-orphan')
+    ratings = db.relationship('Rating', back_populates='recipe', cascade='all, delete-orphan')
     tags = db.relationship('Tag', secondary=recipe_tag_association, back_populates='recipes')
 
     def __repr__(self):

@@ -279,26 +279,40 @@ def manage_comments(id):
             ]
         )
 
+@app.route("/recipes/<int:recipe_id>/tags", methods=["POST", "GET"])
+def manage_recipe_tags(recipe_id):
+    recipe = Recipe.query.get_or_404(recipe_id)
 
-@app.route("/tags", methods=["POST", "GET"])
-def manage_tags():
     if request.method == "POST":
         data = request.get_json()
         if not data or not data.get("name"):
             return jsonify({"message": "Invalid input"}), 400
 
-        new_tag = Tag(name=data["name"])
-        db.session.add(new_tag)
+        tag_name = data["name"]
+        tag = Tag.query.filter_by(name=tag_name).first()
+
+        if not tag:
+            tag = Tag(name=tag_name)
+            db.session.add(tag)
+
+        recipe.tags.append(tag)
         db.session.commit()
-        return jsonify({"message": "Tag created successfully!"}), 201
+        return jsonify({"message": "Tag added to recipe successfully!"}), 201
 
     if request.method == "GET":
-        tags = Tag.query.all()
+        tags = recipe.tags
         return jsonify([{"id": tag.id, "name": tag.name} for tag in tags])
 
+# Route to get all tags
+@app.route("/tags", methods=["GET"])
+def get_all_tags():
+    tags = Tag.query.all()
+    return jsonify([{"id": tag.id, "name": tag.name} for tag in tags])
 
-@app.route("/favorites", methods=["POST", "GET"])
-def manage_favorites():
+
+
+@app.route("/recipes/<int:recipe_id>/favorites", methods=["POST", "GET"])
+def manage_favorites(recipe_id):
     if request.method == "POST":
         if "user_id" not in session:
             return jsonify({"message": "Unauthorized access"}), 403
@@ -307,7 +321,7 @@ def manage_favorites():
         if not data or not data.get("recipe_id"):
             return jsonify({"message": "Invalid input"}), 400
 
-        new_favorite = Favorite(user_id=session["user_id"], recipe_id=data["recipe_id"])
+        new_favorite = Favorite(user_id=session["user_id"], recipe_id=recipe_id)
         db.session.add(new_favorite)
         db.session.commit()
         return jsonify({"message": "Favorite added successfully!"}), 201
@@ -316,7 +330,7 @@ def manage_favorites():
         if "user_id" not in session:
             return jsonify({"message": "Unauthorized access"}), 403
 
-        favorites = Favorite.query.filter_by(user_id=session["user_id"]).all()
+        favorites = Favorite.query.filter_by(user_id=session["user_id"], recipe_id=recipe_id).all()
         return jsonify(
             [
                 {
@@ -329,8 +343,8 @@ def manage_favorites():
         )
 
 
-@app.route("/ratings", methods=["POST", "GET"])
-def manage_ratings():
+@app.route("/recipes/<int:recipe_id>/ratings", methods=["POST", "GET"])
+def manage_ratings(recipe_id):
     if request.method == "POST":
         if "user_id" not in session:
             return jsonify({"message": "Unauthorized access"}), 403
@@ -340,14 +354,14 @@ def manage_ratings():
             return jsonify({"message": "Invalid input"}), 400
 
         new_rating = Rating(
-            user_id=session["user_id"], recipe_id=data["recipe_id"], rating=data["rating"]
+            user_id=session["user_id"], recipe_id=recipe_id, rating=data["rating"]
         )
         db.session.add(new_rating)
         db.session.commit()
         return jsonify({"message": "Rating added successfully!"}), 201
 
     if request.method == "GET":
-        ratings = Rating.query.all()
+        ratings = Rating.query.filter_by(recipe_id=recipe_id).all()
         return jsonify(
             [
                 {
@@ -359,6 +373,7 @@ def manage_ratings():
                 for rating in ratings
             ]
         )
+
 
 
 if __name__ == "__main__":
