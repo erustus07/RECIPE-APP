@@ -67,6 +67,102 @@ const DiscoverPage = () => {
             instructions: "Cook chicken with spices, add butter and cream.",
             rating: 4.7,
         },
+        {
+            title: "Avocado Toast",
+            image: "/images/avocado-toast.jpg",
+            description: "Simple and tasty avocado toast with a sprinkle of salt and pepper.",
+            ingredients: ["2 slices bread", "1 avocado", "Salt", "Pepper"],
+            instructions: "Toast bread, mash avocado, spread on toast, sprinkle with salt and pepper.",
+            rating: 4.4,
+        },
+        {
+            title: "Grilled Cheese Sandwich",
+            image: "/images/grilled-cheese.jpg",
+            description: "A classic grilled cheese sandwich with melted cheddar cheese.",
+            ingredients: ["2 slices bread", "2 slices cheddar cheese", "Butter"],
+            instructions: "Butter bread, place cheese between slices, grill until golden brown.",
+            rating: 4.5,
+        },
+        {
+            title: "Mango Smoothie",
+            image: "/images/mango-smoothie.jpg",
+            description: "A refreshing mango smoothie with yogurt and honey.",
+            ingredients: ["1 mango", "1 cup yogurt", "1 tbsp honey"],
+            instructions: "Blend all ingredients until smooth.",
+            rating: 4.6,
+        },
+        {
+            title: "Veggie Stir Fry",
+            image: "/images/veggie-stir-fry.jpg",
+            description: "A colorful veggie stir fry with bell peppers, broccoli, and carrots.",
+            ingredients: ["1 bell pepper", "1 cup broccoli", "2 carrots", "Soy sauce"],
+            instructions: "Stir fry veggies, add soy sauce to taste.",
+            rating: 4.5,
+        },
+        {
+            title: "Chicken Soup",
+            image: "/images/chicken-soup.jpg",
+            description: "A warm and comforting chicken soup with vegetables.",
+            ingredients: ["500g chicken", "2 carrots", "2 celery stalks", "1 onion", "Chicken broth"],
+            instructions: "Cook chicken and veggies in broth until tender.",
+            rating: 4.8,
+        },
+        {
+            title: "Apple Pie",
+            image: "/images/apple-pie.jpg",
+            description: "A classic apple pie with a flaky crust and sweet apple filling.",
+            ingredients: ["Pie crust", "6 apples", "1 cup sugar", "2 tsp cinnamon"],
+            instructions: "Fill crust with apples and sugar mixture, bake at 375°F for 45 minutes.",
+            rating: 4.7,
+        },
+        {
+            title: "Chicken Alfredo",
+            image: "/images/chicken-alfredo.jpg",
+            description: "A creamy chicken Alfredo pasta with garlic and Parmesan.",
+            ingredients: ["200g fettuccine", "200g chicken", "1 cup cream", "2 garlic cloves", "Parmesan cheese"],
+            instructions: "Cook pasta and chicken, mix with cream and garlic, top with Parmesan.",
+            rating: 4.8,
+        },
+        {
+            title: "Banana Bread",
+            image: "/images/banana-bread.jpg",
+            description: "A moist and delicious banana bread with walnuts.",
+            ingredients: ["3 bananas", "1 cup sugar", "2 cups flour", "1 tsp baking soda", "1/2 cup walnuts"],
+            instructions: "Mix ingredients, bake at 350°F for 60 minutes.",
+            rating: 4.9,
+        },
+        {
+            title: "Shrimp Scampi",
+            image: "/images/shrimp-scampi.jpg",
+            description: "A flavorful shrimp scampi with garlic and lemon.",
+            ingredients: ["200g shrimp", "2 garlic cloves", "1 lemon", "1/4 cup butter", "Parsley"],
+            instructions: "Cook shrimp with garlic and butter, add lemon juice and parsley.",
+            rating: 4.7,
+        },
+        {
+            title: "Fish Tacos",
+            image: "/images/fish-tacos.jpg",
+            description: "Crispy fish tacos with cabbage slaw and lime crema.",
+            ingredients: ["200g fish", "8 taco shells", "Cabbage", "Lime crema"],
+            instructions: "Cook fish, fill taco shells with fish, slaw, and crema.",
+            rating: 4.6,
+        },
+        {
+            title: "French Toast",
+            image: "/images/french-toast.jpg",
+            description: "Classic French toast served with maple syrup and powdered sugar.",
+            ingredients: ["4 slices bread", "2 eggs", "1/2 cup milk", "Cinnamon", "Maple syrup"],
+            instructions: "Dip bread in egg mixture, cook on griddle until golden brown.",
+            rating: 4.8,
+        },
+        {
+            title: "Tomato Soup",
+            image: "/images/tomato-soup.jpg",
+            description: "A creamy tomato soup with basil and a hint of garlic.",
+            ingredients: ["6 tomatoes", "1 onion", "2 garlic cloves", "Basil", "Cream"],
+            instructions: "Cook tomatoes, onion, and garlic, blend with basil and cream.",
+            rating: 4.5,
+        },
     ];
 
     const renderStars = (rating) => {
@@ -108,3 +204,4 @@ const DiscoverPage = () => {
 };
 
 export default DiscoverPage;
+
