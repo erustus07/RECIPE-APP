@@ -18,6 +18,31 @@ const DiscoverPage = () => {
             image: "/images/spaghetti-carbonara.jpg",
             description: "A traditional Italian pasta dish with eggs, cheese, pancetta, and pepper.",
         },
+        {
+            title: "Margherita Pizza",
+            image: "/images/margherita-pizza.jpg",
+            description: "A simple and classic Margherita pizza with fresh tomatoes, mozzarella, and basil.",
+        },
+        {
+            title: "Beef Tacos",
+            image: "/images/beef-tacos.jpg",
+            description: "Tasty beef tacos with fresh salsa and guacamole.",
+        },
+        {
+            title: "Pancakes",
+            image: "/images/pancakes.jpg",
+            description: "Fluffy pancakes served with maple syrup and fresh berries.",
+        },
+        {
+            title: "Greek Salad",
+            image: "/images/greek-salad.jpg",
+            description: "A refreshing Greek salad with cucumbers, tomatoes, olives, and feta cheese.",
+        },
+        {
+            title: "Butter Chicken",
+            image: "/images/butter-chicken.jpg",
+            description: "A rich and creamy butter chicken served with naan bread.",
+        },
     ];
 
     return (
@@ -39,3 +64,4 @@ const DiscoverPage = () => {
 };
 
 export default DiscoverPage;
+
