@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CommentComponent from "./CommentComponent";  
 import TagComponent from "./TagComponent";
+import FavoritesComponent from "./FavoriteComponent";
+import RatingComponent from "./RatingComponent";
 
 const RecipeDetails = () => {
   const { recipeId } = useParams();
@@ -123,6 +125,8 @@ const RecipeDetails = () => {
           </button>
           <TagComponent recipeId={recipeId} />
           <CommentComponent recipeId={recipeId} />
+          <FavoritesComponent recipeId={recipeId} />
+          <RatingComponent recipeId={recipeId} />
         </>
       ) : (
         <form onSubmit={handleSubmit}>
