@@ -210,8 +210,8 @@ def manage_single_recipe(recipe_id):
             recipe.name = data["name"]
             recipe.description = data["description"]
             # Join ingredients and instructions lists into strings
-            recipe.ingredients = ", ".join(data["ingredients"])
-            recipe.instructions = ", ".join(data["instructions"])
+            recipe.ingredients = data["ingredients"]
+            recipe.instructions = data["instructions"]
             
             db.session.commit()
             
