@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CommentComponent from "./CommentComponent";  
+import TagComponent from "./TagComponent";
 
 const RecipeDetails = () => {
   const { recipeId } = useParams();
@@ -120,6 +121,7 @@ const RecipeDetails = () => {
           <button className="back-button" onClick={goBack}>
             Back to Recipes
           </button>
+          <TagComponent recipeId={recipeId} />
           <CommentComponent recipeId={recipeId} />
         </>
       ) : (
