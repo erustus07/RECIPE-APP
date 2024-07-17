@@ -56,11 +56,6 @@ function Navbar() {
               </Link>
             </li>
             <li className="nav-links">
-              <Link to="/addyours" className="navs" onClick={toggleMenu}>
-                Add Yours
-              </Link>
-            </li>
-            <li className="nav-links">
               <Link to="/recipes" className="navs" onClick={toggleMenu}>
                 Recipes
               </Link>

@@ -22,7 +22,7 @@ export default function CommentComponent({ recipeId }) {
 
   useEffect(() => {
     fetchComments();
-  });
+  }, [recipeId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

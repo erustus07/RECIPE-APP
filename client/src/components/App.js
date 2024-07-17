@@ -13,7 +13,6 @@ import Recipes from "./Recipes";
 import RecipeForm from "./RecipeForm";
 import RecipeDetails from "./RecipeDetails";
 import DiscoverPage from "./DiscoverPage";  // Import DiscoverPage
-import AddYours from "./AddYours"; // Import AddYours component
 import "./App.css";
 
 export default function App() {
@@ -29,7 +28,6 @@ export default function App() {
         <Route path="/recipes/add" element={<RecipeForm />} />
         <Route path="/recipes/:recipeId" element={<RecipeDetails />} />
         <Route path="/discover" element={<DiscoverPage />} />  {/* Add this line */}
-        <Route path="/addyours" element={<AddYours />} /> {/* Add this line */}
       </Routes>
     </Router>
   );
