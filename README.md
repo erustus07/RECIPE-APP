@@ -1,4 +1,4 @@
-# Recipe Sharing Platform
+# RecipeAPP
 
 ## Problem Statement
 
@@ -14,7 +14,6 @@ The Recipe Sharing Platform addresses these challenges by providing a dedicated 
 - **Recipe Management**: Create, read, update, and delete recipes.
 - **Commenting/Review System**: Users can comment on recipes and view comments.
 - **Favoriting Recipes**: Users can favorite recipes to save them for later.
-- **User Profile**: View user profiles with their comments and favorite recipes.
 - **Search Functionality**: Search recipes by title, ingredients, or description.
 - **Rating System**: Users can rate recipes to help others find the best content.
 

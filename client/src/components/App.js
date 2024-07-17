@@ -12,7 +12,7 @@ import Register from "./user/Register";
 import Recipes from "./Recipes";
 import RecipeForm from "./RecipeForm";
 import RecipeDetails from "./RecipeDetails";
-import DiscoverPage from "./DiscoverPage";  // Import DiscoverPage
+import DiscoverPage from "./DiscoverPage";  
 import "./App.css";
 
 export default function App() {
@@ -27,7 +27,7 @@ export default function App() {
         <Route path="/recipes" element={<Recipes />} />
         <Route path="/recipes/add" element={<RecipeForm />} />
         <Route path="/recipes/:recipeId" element={<RecipeDetails />} />
-        <Route path="/discover" element={<DiscoverPage />} />  {/* Add this line */}
+        <Route path="/discover" element={<DiscoverPage />} /> 
       </Routes>
     </Router>
   );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import chefIcon from '../images/chef.png'; // Import your icon here
-import { userInitials } from "./user/UserProfile"; // Importing userInitials from UserProfile
+
 
 function Navbar() {
   const [user, setUser] = useState(null);
@@ -51,14 +51,8 @@ function Navbar() {
                 Recipes
               </Link>
             </li>
-            
-                <li className="nav-links">
-                  <Link to="/user" className="navs" onClick={toggleMenu}>
-                    Profile
-                  </Link>
-                </li>
                 <li className="nav-links" onClick={handleLogout}>
-                  <Link className="login">{userInitials} Logout</Link>
+                  <Link className="login">Logout</Link>
                 </li>
               </>
             ) : (

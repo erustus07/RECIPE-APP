@@ -94,7 +94,7 @@ def manage_user(user_id):
     user = User.query.get_or_404(user_id)
 
     if request.method == "GET":
-        return jsonify({"name": user.username})
+        return jsonify({"name": user.username, "email": user.email})
 
     if request.method == "PUT":
         data = request.get_json()
@@ -102,9 +102,7 @@ def manage_user(user_id):
             return jsonify({"message": "Invalid input"}), 400
 
         user.username = data["username"]
-        user.password_hash = bcrypt.generate_password_hash(data["password"]).decode(
-            "utf-8"
-        )
+        user.password_hash = bcrypt.generate_password_hash(data["password"]).decode("utf-8")
         db.session.commit()
         return jsonify({"message": "User updated successfully"}), 200
 
