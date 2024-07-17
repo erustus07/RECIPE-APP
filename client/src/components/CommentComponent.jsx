@@ -3,34 +3,28 @@ import React, { useEffect, useState } from "react";
 export default function CommentComponent({ recipeId }) {
   const [content, setContent] = useState("");
   const [comments, setComments] = useState(null);
-  const recipe_id = recipeId;
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5000/recipes/${recipeId}/comments`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        setComments(data); // Assuming data is an array of comments
-      } catch (error) {
-        console.error("Error fetching comments:", error);
-        setComments([]); // Set comments to an empty array on error
+
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/recipes/${recipeId}/comments`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
+      const data = await response.json();
+      setComments(data); // Assuming data is an array of comments
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      setComments([]); // Set comments to an empty array on error
+    }
+  };
 
+  useEffect(() => {
     fetchComments();
-  }, [recipeId]);
+  });
 
-  console.log(comments);
-
-  if (comments === null) {
-    return <p>Loading comments...</p>;
-  }
-
-  const HandleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await fetch(
@@ -38,20 +32,30 @@ export default function CommentComponent({ recipeId }) {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content, recipe_id }),
+          body: JSON.stringify({ content, recipe_id: recipeId }),
+          credentials: 'include', // Include credentials in the request
         }
       );
       const data = await res.json();
       if (!res.ok) {
-        alert(`${data}`);
+        alert(`Failed to add comment: ${data.message}`);
         console.log(data);
-        throw new Error("Did not worl");
+        throw new Error("Failed to add comment");
       } else {
-        alert(`${data}`);
+        alert("Comment added successfully!");
         console.log(data);
+        fetchComments(); 
       }
-    } catch (error) {}
+      setContent(""); 
+    } catch (error) {
+      console.error("Error posting comment:", error);
+    }
   };
+
+  if (comments === null) {
+    return <p>Loading comments...</p>;
+  }
+
   return (
     <div>
       <h3>Comments</h3>
@@ -64,7 +68,7 @@ export default function CommentComponent({ recipeId }) {
           ))}
         </ul>
       )}
-      <form onSubmit={HandleSubmit}>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={content}

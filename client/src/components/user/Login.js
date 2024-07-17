@@ -24,6 +24,7 @@ const Login = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
+        credentials: "include" // Include cookies in the request
       });
 
       if (!response.ok) {
@@ -45,7 +46,7 @@ const Login = () => {
 
   const closePopup = () => {
     setShowPopup(false);
-    navigate("/home"); // Redirect after closing popup
+    navigate("/recipes"); // Redirect after closing popup
   };
 
   return (

@@ -19,14 +19,19 @@ const RecipeForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log('Form data:', formData);
       const response = await fetch('http://localhost:5000/recipes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
+        credentials: 'include'  // Include cookies in the request
       });
+      console.log('Response status:', response.status);
       if (!response.ok) {
+        const errorData = await response.json();
+        console.log('Error data:', errorData);
         throw new Error('Failed to add recipe');
       }
       // Clear form data upon successful submission
@@ -43,6 +48,8 @@ const RecipeForm = () => {
       setError('Failed to add recipe. Please try again.');
     }
   };
+  
+  
 
   return (
     <div>
