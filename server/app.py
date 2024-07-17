@@ -327,10 +327,7 @@ def manage_favorites(recipe_id):
         return jsonify({"message": "Favorite added successfully!"}), 201
 
     if request.method == "GET":
-        if "user_id" not in session:
-            return jsonify({"message": "Unauthorized access"}), 403
-
-        favorites = Favorite.query.filter_by(user_id=session["user_id"], recipe_id=recipe_id).all()
+        favorites = Favorite.query.filter_by(recipe_id=recipe_id).all()
         return jsonify(
             [
                 {
@@ -350,11 +347,17 @@ def manage_ratings(recipe_id):
             return jsonify({"message": "Unauthorized access"}), 403
 
         data = request.get_json()
-        if not data or not data.get("recipe_id") or not data.get("rating"):
+        print("Received data:", data)  # Debugging line
+
+        if not data or not data.get("score"):
             return jsonify({"message": "Invalid input"}), 400
+        
+        score = int(data["score"])
+        if not (1 <= score <= 5):
+            return jsonify({"message": "Score must be between 1 and 5"}), 400
 
         new_rating = Rating(
-            user_id=session["user_id"], recipe_id=recipe_id, rating=data["rating"]
+            user_id=session["user_id"], recipe_id=recipe_id, score=data["score"]
         )
         db.session.add(new_rating)
         db.session.commit()
@@ -368,11 +371,12 @@ def manage_ratings(recipe_id):
                     "id": rating.id,
                     "recipe_id": rating.recipe_id,
                     "user_id": rating.user_id,
-                    "rating": rating.rating,
+                    "score": rating.score,
                 }
                 for rating in ratings
             ]
         )
+
 
 
 

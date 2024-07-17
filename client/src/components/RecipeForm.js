@@ -1,79 +1,85 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
 const RecipeForm = () => {
-  const [formData, setFormData] = useState({
+  const navigate = useNavigate();
+
+  const initialValues = {
     name: '',
     description: '',
     ingredients: '',
-    instructions: ''
-  });
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    instructions: '',
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    description: Yup.string().required('Description is required'),
+    ingredients: Yup.string().required('Ingredients are required'),
+    instructions: Yup.string().required('Instructions are required'),
+  });
+
+  const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
     try {
-      console.log('Form data:', formData);
       const response = await fetch('http://localhost:5000/recipes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
-        credentials: 'include'  // Include cookies in the request
+        body: JSON.stringify(values),
+        credentials: 'include', // Include cookies in the request
       });
-      console.log('Response status:', response.status);
+
       if (!response.ok) {
         const errorData = await response.json();
-        console.log('Error data:', errorData);
         throw new Error('Failed to add recipe');
       }
-      // Clear form data upon successful submission
-      setFormData({
-        name: '',
-        description: '',
-        ingredients: '',
-        instructions: ''
-      });
-      // Redirect to recipes page after successful submission
+
+      // Clear form upon successful submission
       navigate('/recipes');
     } catch (error) {
       console.error('Error adding recipe:', error);
-      setError('Failed to add recipe. Please try again.');
+      setSubmitting(false);
     }
   };
-  
-  
 
   return (
     <div>
       <h2>Add New Recipe</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name:</label>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Description:</label>
-          <textarea name="description" value={formData.description} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Ingredients:</label>
-          <textarea name="ingredients" value={formData.ingredients} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Instructions:</label>
-          <textarea name="instructions" value={formData.instructions} onChange={handleChange} required />
-        </div>
-        <button type="submit">Add Recipe</button>
-      </form>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting }) => (
+          <Form>
+            <div>
+              <label htmlFor="name">Name:</label>
+              <Field type="text" id="name" name="name" />
+              <ErrorMessage name="name" component="div" className="error-message" />
+            </div>
+            <div>
+              <label htmlFor="description">Description:</label>
+              <Field as="textarea" id="description" name="description" />
+              <ErrorMessage name="description" component="div" className="error-message" />
+            </div>
+            <div>
+              <label htmlFor="ingredients">Ingredients:</label>
+              <Field as="textarea" id="ingredients" name="ingredients" />
+              <ErrorMessage name="ingredients" component="div" className="error-message" />
+            </div>
+            <div>
+              <label htmlFor="instructions">Instructions:</label>
+              <Field as="textarea" id="instructions" name="instructions" />
+              <ErrorMessage name="instructions" component="div" className="error-message" />
+            </div>
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Adding Recipe...' : 'Add Recipe'}
+            </button>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };

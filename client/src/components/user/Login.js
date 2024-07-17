@@ -1,30 +1,32 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import "../styles/Login.css"; // Import your CSS file for styling
+
+const LoginSchema = Yup.object().shape({
+  username: Yup.string().required("Username is required"),
+  password: Yup.string().required("Password is required"),
+});
 
 const Login = () => {
   const navigate = useNavigate();
   const { setIsAuth } = useAuth();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPopup, setShowPopup] = useState(false); // State for controlling popup visibility
+  const initialValues = {
+    username: "",
+    password: "",
+  };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
+  const handleLogin = async (values, { setSubmitting, setFieldError }) => {
     try {
       const response = await fetch("http://localhost:5000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
-        credentials: "include" // Include cookies in the request
+        body: JSON.stringify(values),
+        credentials: "include", // Include cookies in the request
       });
 
       if (!response.ok) {
@@ -33,58 +35,46 @@ const Login = () => {
 
       const data = await response.json();
       console.log(data);
-      localStorage.setItem("user", JSON.stringify({ username }));
+      localStorage.setItem("user", JSON.stringify({ username: values.username }));
       setIsAuth(true); // Set authentication state to true
-      setShowPopup(true); // Set state to show popup message
+      navigate("/recipes"); // Redirect after successful login
     } catch (error) {
       console.error("Login error:", error);
-      setError("Invalid username or password"); // Set error message for invalid credentials
+      setFieldError("password", "Invalid username or password"); // Set error message for invalid credentials
     } finally {
-      setIsLoading(false);
+      setSubmitting(false);
     }
-  };
-
-  const closePopup = () => {
-    setShowPopup(false);
-    navigate("/recipes"); // Redirect after closing popup
   };
 
   return (
     <div className="login-container">
       <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        {error && <p className="error-message">{error}</p>}
-        <div>
-          <label>Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit" disabled={isLoading}>
-          Login
-        </button>
-      </form>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={LoginSchema}
+        onSubmit={handleLogin}
+      >
+        {({ isSubmitting }) => (
+          <Form>
+            <div>
+              <label htmlFor="username">Username:</label>
+              <Field type="text" id="username" name="username" />
+              <ErrorMessage name="username" component="div" className="error-message" />
+            </div>
+            <div>
+              <label htmlFor="password">Password:</label>
+              <Field type="password" id="password" name="password" />
+              <ErrorMessage name="password" component="div" className="error-message" />
+            </div>
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Logging in..." : "Login"}
+            </button>
+          </Form>
+        )}
+      </Formik>
       <p>
         Don't have an account? <Link to="/register">Register</Link>
       </p>
-
-      {/* Popup message */}
-      {showPopup && (
-        <div className="popup">
-          <p>Login successful!</p>
-          <button onClick={closePopup}>Close</button>
-        </div>
-      )}
     </div>
   );
 };

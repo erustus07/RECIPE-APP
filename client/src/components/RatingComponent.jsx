@@ -26,7 +26,6 @@ const RatingComponent = ({ recipeId }) => {
     e.preventDefault();
     try {
       const payload = { score: newRating };  // Create the payload
-      console.log("Sending payload:", payload);  // Debugging line
 
       const response = await fetch(`http://localhost:5000/recipes/${recipeId}/ratings`, {
         method: "POST",
@@ -37,17 +36,29 @@ const RatingComponent = ({ recipeId }) => {
       const data = await response.json();
       if (!response.ok) {
         alert(`Failed to add rating: ${data.message}`);
-        console.log(data);
         throw new Error("Failed to add rating");
       } else {
         alert("Rating added successfully!");
-        console.log(data);
         fetchRatings(); // Refresh ratings after adding new rating
       }
       setNewRating(""); // Clear input field after successful rating submission
     } catch (error) {
       console.error("Error adding rating:", error);
     }
+  };
+
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const halfStars = rating % 1 >= 0.5 ? 1 : 0;
+    const emptyStars = 5 - fullStars - halfStars;
+
+    return (
+      <>
+        {'★'.repeat(fullStars)}
+        {halfStars ? '☆' : ''}
+        {'☆'.repeat(emptyStars)}
+      </>
+    );
   };
 
   return (
@@ -58,7 +69,9 @@ const RatingComponent = ({ recipeId }) => {
           <p>No ratings yet.</p>
         ) : (
           ratings.map((rating) => (
-            <p key={rating.id}>{rating.score}</p>  // Use score here
+            <p key={rating.id}>
+              {renderStars(rating.score)} {/* Render stars based on rating score */}
+            </p>
           ))
         )}
       </ul>
@@ -68,6 +81,8 @@ const RatingComponent = ({ recipeId }) => {
           value={newRating}
           onChange={(e) => setNewRating(e.target.value)}
           placeholder="Add a rating..."
+          min="1"
+          max="5"
           required
         />
         <button type="submit">Add Rating</button>

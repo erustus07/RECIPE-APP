@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import chefIcon from '../images/chef.png'; // Import your icon here
 
@@ -7,6 +7,7 @@ function Navbar() {
   const [user, setUser] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -34,6 +35,7 @@ function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
+    navigate('/login');
   };
 
   return (
