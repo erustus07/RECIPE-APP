@@ -58,7 +58,7 @@ const RatingComponent = ({ recipeId }) => {
           <p>No ratings yet.</p>
         ) : (
           ratings.map((rating) => (
-            <li key={rating.id}>{rating.score}</li>  // Use score here
+            <p key={rating.id}>{rating.score}</p>  // Use score here
           ))
         )}
       </ul>

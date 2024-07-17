@@ -52,7 +52,7 @@ const FavoritesComponent = ({ recipeId }) => {
       ) : (
         <ul>
           {favorites.map(favorite => (
-            <li key={favorite.id}>Favorite by user {favorite.user_id}</li>
+            <p key={favorite.id}>Favorite by user {favorite.user_id}</p>
           ))}
         </ul>
       )}

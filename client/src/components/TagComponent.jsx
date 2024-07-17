@@ -60,7 +60,7 @@ const TagComponent = ({ recipeId }) => {
           <p>No tags yet.</p>
         ) : (
           tags.map((tag) => (
-            <li key={tag.id}>{tag.name}</li>
+            <p key={tag.id}>{tag.name}</p>
           ))
         )}
       </ul>

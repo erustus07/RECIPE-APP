@@ -64,7 +64,7 @@ export default function CommentComponent({ recipeId }) {
       ) : (
         <ul className="comments-container">
           {comments.map((comment) => (
-            <li key={comment.id}>{comment.content}</li>
+            <p key={comment.id}>{comment.content}</p>
           ))}
         </ul>
       )}
