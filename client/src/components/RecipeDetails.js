@@ -5,6 +5,8 @@ import TagComponent from "./TagComponent";
 import FavoritesComponent from "./FavoriteComponent";
 import RatingComponent from "./RatingComponent";
 
+
+
 const RecipeDetails = () => {
   const { recipeId } = useParams();
   const navigate = useNavigate();

@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background-color: #000;
+  background-color: #252525;
   color: #fff;
   min-height: calc(100vh - 60px); /* Adjust according to your navbar height */
 }
@@ -19,6 +19,7 @@
 .description-image {
   flex: 1; /* Take up remaining space */
   margin-right: 20px; /* Adjust spacing between text and image */
+  border-radius: 30px;
 }
 
 .text-container {
@@ -32,7 +33,7 @@
 }
 
 .highlighted {
-  color: #b22222;
+  color: #ff0000;
 }
 
 .ptag {
@@ -47,7 +48,7 @@
 .separator {
   width: 2px;
   height: 100%;
-  background-color: #b22222;
+  background-color: #ff0000;
   margin: 0 20px;
 }
 

@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./styles/RecipeCard.module.css";
 
 const RecipeCard = ({ recipe, redirectToRecipeDetails }) => {
   const handleRedirect = () => {
@@ -6,11 +7,11 @@ const RecipeCard = ({ recipe, redirectToRecipeDetails }) => {
   };
 
   return (
-    <div className="recipe-card">
-      <div className="recipe-card-content">
-        <h3 className="recipe-card-title">{recipe.name}</h3>
-        <p className="recipe-card-description">{recipe.description}</p>
-        <button className="recipe-card-button" onClick={handleRedirect}>
+    <div className={styles.recipeCard}>
+      <div className={styles.recipeCardContent}>
+        <h3 className={styles.recipeCardTitle}>{recipe.name}</h3>
+        <p className={styles.recipeCardDescription}>{recipe.description}</p>
+        <button className={styles.recipeCardButton} onClick={handleRedirect}>
           View Details
         </button>
       </div>

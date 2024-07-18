@@ -1,0 +1,61 @@
+.body{
+  background-color: rgb(56, 56, 56);
+}
+.recipeCardContainer {
+  background-color: rgb(163, 163, 163);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+
+}
+
+.recipeCard {
+  display: inline-grid;
+  --border-radius: 0.75rem;
+  width: 210px;
+  font-family: "Arial";
+  padding: 1rem;
+  background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.recipeCard:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+
+.recipeCardTitle {
+  font-size: 1.6rem;
+  margin: 0;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.recipeCardDescription {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+.recipeCardButton {
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #c42e00;
+  color: #f1f1f1;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.recipeCardButton:hover {
+  background-color: #ff0000;
+  transform: scale(1.05);
+}

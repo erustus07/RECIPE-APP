@@ -1,6 +1,7 @@
 .discover-container {
-    padding: 20px;
+    padding: 30px;
     text-align: center;
+    background-color: #c7c7c7;
 }
 
 .card-container {
@@ -34,14 +35,14 @@
 
 .card-content {
     padding: 15px;
-    background: #fff;
+    background: #ffffff;
 }
 
 .card-hover-content {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 90%;
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     color: #fff;
@@ -62,3 +63,4 @@
 .card-hover-content p {
     margin: 10px 0;
 }
+

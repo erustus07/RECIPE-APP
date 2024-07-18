@@ -27,7 +27,6 @@ function Home() {
         </div>
         <div className="separator"></div>
         <div className="homeImage">
-          <img src="/homepage.png" alt="Homepage" />
         </div>
       </div>
     </div>
